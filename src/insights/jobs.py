@@ -14,10 +14,19 @@ class ProcessJobs:
                 self.jobs_list.append(dict(row))
 
     def get_unique_job_types(self) -> List[str]:
-        return list(set([job['job_type'] for job in self.jobs_list]))
+        return list(set([job["job_type"] for job in self.jobs_list]))
 
-    def filter_by_multiple_criteria(self) -> List[dict]:
-        pass
+    def filter_by_multiple_criteria(
+        self, jobs: List[dict], filter_criteria: dict
+    ) -> List[dict]:
+        if not isinstance(filter_criteria, dict):
+            raise TypeError("filter_criteria must be a dictionary")
+        jobs_filtered = jobs  # start with all jobs
+        for criteria in filter_criteria.items():
+            jobs_filtered = [
+                job for job in jobs_filtered if job[criteria[0]] == criteria[1]
+            ]
+        return jobs_filtered
 
 
 process_jobs = ProcessJobs()
