@@ -8,6 +8,11 @@ class ProcessSalaries(ProcessJobs):
     def __init__(self):
         super().__init__()
 
+    @staticmethod
+    def verify_key_in_job(job: Dict) -> bool:
+        if "min_salary" not in job or "max_salary" not in job:
+            raise ValueError("Job must have min_salary and max_salary")
+
     def get_max_salary(self) -> int:
         # max_salary = 0
         # for job in self.jobs_list:
@@ -36,33 +41,32 @@ class ProcessSalaries(ProcessJobs):
         )
 
     def matches_salary_range(self, job: Dict, salary: Union[int, str]) -> bool:
-        if "min_salary" not in job or "max_salary" not in job:
-            raise ValueError("Job must have min_salary and max_salary")
+        ProcessSalaries.verify_key_in_job(job)
         try:
             # Convert values to integers
             min_salary = int(job["min_salary"])
             max_salary = int(job["max_salary"])
 
-            # Check if values are >= 0
-            if min_salary < 0 or max_salary < 0:
+            if min_salary < 0:
                 raise ValueError(
-                    "Values of 'min_salary' and 'max_salary' must be greater than or equal to zero."
+                    "Values of 'min_salary' and 'max_salary'"
+                    "must be greater than or equal to zero."
                 )
 
             # Check if min_salary is less than or equal to max_salary
-            if min_salary > max_salary:
+            if min_salary >= max_salary:
                 raise ValueError(
                     "'min_salary' must be less than or equal to 'max_salary'."
                 )
 
-            # Check if salary is numeric
             salary = int(salary)
 
             # Check if salary is within the salary range
             return min_salary <= salary <= max_salary
         except (ValueError, TypeError):
             raise ValueError(
-                "Values of 'min_salary', 'max_salary', and 'salary' must be numeric."
+                "Values of 'min_salary', 'max_salary',"
+                "and 'salary' must be numeric."
             )
 
     def filter_by_salary_range(
