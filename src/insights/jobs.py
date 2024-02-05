@@ -10,10 +10,11 @@ class ProcessJobs:
         with open(path, encoding="utf-8") as file:
             reader = csv.DictReader(file)
             for row in reader:
+                # print (row['job_type'])
                 self.jobs_list.append(dict(row))
 
     def get_unique_job_types(self) -> List[str]:
-        pass
+        return list(set([job['job_type'] for job in self.jobs_list]))
 
     def filter_by_multiple_criteria(self) -> List[dict]:
         pass
@@ -21,3 +22,4 @@ class ProcessJobs:
 
 process_jobs = ProcessJobs()
 print(process_jobs.read("data/jobs.csv"))
+print(process_jobs.get_unique_job_types())
