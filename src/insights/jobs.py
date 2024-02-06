@@ -29,12 +29,12 @@ class ProcessJobs:
         return jobs_filtered
 
 
-process_jobs = ProcessJobs()
-print(process_jobs.read("data/jobs.csv"))
-print(process_jobs.get_unique_job_types())
+# process_jobs = ProcessJobs()
+# print(process_jobs.read("data/jobs.csv"))
+# print(process_jobs.get_unique_job_types())
 
 
-list_of_jobs = [
-            {"max_salary": 15000, "min_salary": 0},
-        {"max_salary": 1500, "min_salary": 0},
-]
+# list_of_jobs = [
+#     {"max_salary": 15000, "min_salary": 0},
+#     {"max_salary": 1500, "min_salary": 0},
+# ]
