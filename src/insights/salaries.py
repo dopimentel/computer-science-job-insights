@@ -96,55 +96,28 @@ class ProcessSalaries(ProcessJobs):
     def filter_by_salary_range(
         self, jobs: List[dict], salary: Union[str, int]
     ) -> List[Dict]:
-        # return [
-        #     job
-        #     for job in jobs
-        #     if self.matches_salary_range(job, salary)
-        # ]
-
-        valids_jobs = [
-            job
-            for job in jobs
-            # if job["min_salary"].isdigit() and job["max_salary"].isdigit()
-            if isinstance(job["min_salary"], int)
-            and isinstance(job["max_salary"], int)
-            and job["min_salary"] != ""
-            and job["max_salary"] != ""
-        ]
-        # print(valids_jobs)
-
-        result = []
-        for job in valids_jobs:
-            print(job["min_salary"], job["max_salary"])
-
-            if isinstance(salary, str) and salary != "":
-                salary = int(salary)
-
+        print(jobs)
+        valids_jobs = []
+        for job in jobs:
             try:
-
-                my_job = {
-                    "min_salary": job["min_salary"],
-                    "max_salary": job["max_salary"],
-                }
-                # print(my_job)
-                # print(job)
-                if self.matches_salary_range(my_job, salary):
-                    # print(job)
-                    result.append(job)
-                    print("entrou no true")
-                    print(result)
-
+                ProcessSalaries.verify_mandatory_keys_in_job(job)
+                ProcessSalaries.verify_keys_values_in_job(job)
+                ProcessSalaries.verify_salary_is_numeric(salary)
+                valids_jobs.append(job)
             except ValueError as e:
                 print(e)
                 continue
-        return result
-        # return
+        print(valids_jobs)
 
-        # job in jobs:
-        # if min_salary
-        # min_salary = job["min_salary"]
-        # max_salary = job["max_salary"]
-        # print(min_salary, max_salary)
+        result = []
+        for job in valids_jobs:
+            min_salary = int(job["min_salary"])
+            max_salary = int(job["max_salary"])
+            salary = int(salary)
+            if ProcessSalaries.compare(min_salary, max_salary, salary):
+                result.append(job)
+        print(result)
+        return result
 
 
 process_salaries = ProcessSalaries()
@@ -156,6 +129,9 @@ process_salaries = ProcessSalaries()
 # )
 
 list_of_jobs = [
+    {"max_salary": 1000},
+    {"min_salary": 1000},
+    {"max_salary": None, "min_salary": 1000},
     {"max_salary": 0, "min_salary": 10},
     {"max_salary": 10, "min_salary": 100},
     {"max_salary": 10000, "min_salary": 200},
