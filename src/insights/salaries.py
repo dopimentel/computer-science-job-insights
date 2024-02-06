@@ -47,18 +47,15 @@ class ProcessSalaries(ProcessJobs):
             raise ValueError("Salary must be numeric.")
 
     @staticmethod
-    def compare(min_salary: int, max_salary: int, salary: int) -> bool:
-        return min_salary <= salary <= max_salary
+    def compare(
+        min_salary: Union[int, str],
+        max_salary: Union[int, str],
+        salary: Union[int, str],
+    ) -> bool:
+
+        return int(min_salary) <= int(salary) <= int(max_salary)
 
     def get_max_salaries_jobs(self) -> int:
-        # max_salary = 0
-        # for job in self.jobs_list:
-        #     if job["max_salary"] != "" and job["max_salary"] != "invalid":
-        #         print(job["max_salary"])
-        #         print(type(job["max_salary"]))
-        #         if int(job["max_salary"]) > max_salary:
-        #             max_salary = int(job["max_salary"])
-        # return max_salary
 
         return [
             int(job["max_salary"])
@@ -85,60 +82,50 @@ class ProcessSalaries(ProcessJobs):
         if ProcessSalaries.verify_keys_values_in_job(
             job
         ) and ProcessSalaries.verify_salary_is_numeric(salary):
-            min_salary = int(job["min_salary"])
-            max_salary = int(job["max_salary"])
-
-            salary = int(salary)
-
             # Check if salary is within the salary range
-            return ProcessSalaries.compare(min_salary, max_salary, salary)
+            return ProcessSalaries.compare(
+                job["min_salary"], job["max_salary"], salary
+            )
 
     def filter_by_salary_range(
         self, jobs: List[dict], salary: Union[str, int]
     ) -> List[Dict]:
-        print(jobs)
         valids_jobs = []
         for job in jobs:
             try:
                 ProcessSalaries.verify_mandatory_keys_in_job(job)
                 ProcessSalaries.verify_keys_values_in_job(job)
                 ProcessSalaries.verify_salary_is_numeric(salary)
-                valids_jobs.append(job)
-            except ValueError as e:
-                print(e)
-                continue
+                if ProcessSalaries.compare(
+                    job["min_salary"], job["max_salary"], salary
+                ):
+                    valids_jobs.append(job)
+            except ValueError:
+                pass
         print(valids_jobs)
 
-        result = []
-        for job in valids_jobs:
-            min_salary = int(job["min_salary"])
-            max_salary = int(job["max_salary"])
-            salary = int(salary)
-            if ProcessSalaries.compare(min_salary, max_salary, salary):
-                result.append(job)
-        print(result)
-        return result
+        return valids_jobs
 
 
-process_salaries = ProcessSalaries()
-# print(process_salaries.read("data/jobs.csv"))
-# print(
-#     process_salaries.matches_salary_range(
-#         {"max_salary": 1000, "min_salary": 100}, 100
-#     )
-# )
+# process_salaries = ProcessSalaries()
+# # print(process_salaries.read("data/jobs.csv"))
+# # print(
+# #     process_salaries.matches_salary_range(
+# #         {"max_salary": 1000, "min_salary": 100}, 100
+# #     )
+# # )
 
-list_of_jobs = [
-    {"max_salary": 1000},
-    {"min_salary": 1000},
-    {"max_salary": None, "min_salary": 1000},
-    {"max_salary": 0, "min_salary": 10},
-    {"max_salary": 10, "min_salary": 100},
-    {"max_salary": 10000, "min_salary": 200},
-    {"max_salary": 15000, "min_salary": 0},
-    {"max_salary": 1500, "min_salary": 0},
-    {"max_salary": -1, "min_salary": 10},
-]
+# list_of_jobs = [
+#     {"max_salary": 1000},
+#     {"min_salary": 1000},
+#     {"max_salary": None, "min_salary": 1000},
+#     {"max_salary": 0, "min_salary": 10},
+#     {"max_salary": 10, "min_salary": 100},
+#     {"max_salary": 10000, "min_salary": 200},
+#     {"max_salary": 15000, "min_salary": 0},
+#     {"max_salary": 1500, "min_salary": 0},
+#     {"max_salary": -1, "min_salary": 10},
+# ]
 
 
-process_salaries.filter_by_salary_range(list_of_jobs, 0)
+# process_salaries.filter_by_salary_range(list_of_jobs, 0)
