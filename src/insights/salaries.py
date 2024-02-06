@@ -102,7 +102,7 @@ class ProcessSalaries(ProcessJobs):
                     valids_jobs.append(job)
             except ValueError:
                 pass
-        print(valids_jobs)
+        # print(valids_jobs)
 
         return valids_jobs
 
